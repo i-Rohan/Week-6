@@ -1,0 +1,166 @@
+#include <iostream>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <math.h>
+
+using namespace std;
+
+struct node1    //linked list 1 (input)
+{
+    int data;
+    struct node1 *next;
+};
+
+struct node2    //linked list 2 (for Fibonacci)
+{
+    int data;
+    struct node2 *next;
+};
+
+struct node1 *start1=NULL,*end1=NULL;   //start and end of linked list 1
+struct node2 *start2=NULL,*end2=NULL;   //start and end of linked list 2
+
+bool isPerfectSquare(int); //function to check if number is perfect square
+
+bool isFibonacci(int); //function to check if a number is Fibonacci
+
+void insert1();  //to insert in linked list 1
+
+void insert2(int);   //to inset in linked list 2
+
+void display1(); //to display linked list 1
+
+void display2(); //to display linked list 2
+
+void breakLinkedList(); //to break the linked list in 2 parts
+
+int main()
+{
+    insert1();
+    breakLinkedList();
+    display2();
+    display1();
+    return 0;
+}
+
+bool isPerfectSquare(int x)
+{
+    int s = sqrt(x);
+    return (s*s == x);
+}
+
+bool isFibonacci(int n)
+{
+    // n is Fibonacci if one of 5*n*n + 4 or 5*n*n - 4 or both is a perfect square
+    return isPerfectSquare(5*n*n + 4)||isPerfectSquare(5*n*n - 4);
+}
+
+void insert1()
+{
+    int n,val;
+    cout<<"Enter length of linked list: ";
+    cin>>n;
+    cout<<"Enter value: ";
+    while(n--)
+    {
+        cin>>val;
+        struct node1 *New,*p;
+        New=(struct node1*)malloc(sizeof(struct node1));
+        if(start1==NULL)
+        {
+            New->data=val;
+            New->next=NULL;
+            start1=New;
+            end1=New;
+        }
+        else
+        {
+            p=end1;
+            p->next=New;
+            New->data=val;
+            New->next=NULL;
+            end1=New;
+        }
+    }
+}
+
+void insert2(int val)
+{
+    struct node2 *New,*p;
+    New=(struct node2*)malloc(sizeof(struct node2));
+    if(start2==NULL)
+    {
+        New->data=val;
+        New->next=NULL;
+        start2=New;
+        end2=New;
+    }
+    else
+    {
+        p=end2;
+        p->next=New;
+        New->data=val;
+        New->next=NULL;
+        end2=New;
+    }
+}
+
+void display1() //to display linked list 1
+{
+    struct node1 *p;
+    p=start1;
+    while(p!=NULL)
+    {
+        cout<<p->data;
+        if(p->next!=NULL)
+            cout<<"->";
+        p=p->next;
+    }
+    cout<<"\n";
+}
+
+void display2() //to display linked list 2
+{
+    struct node2 *p;
+    p=start2;
+    while(p!=NULL)
+    {
+        cout<<p->data;
+        if(p->next!=NULL)
+            cout<<"->";
+        p=p->next;
+    }
+    cout<<"\n";
+}
+
+void breakLinkedList() //to break the linked list in 2 parts
+{
+    struct node1 *p,*prep;
+    prep=start1;
+    p=start1;
+    while(p!=NULL)
+    {
+        if(p==start1)
+        {
+            if(isFibonacci(p->data))
+            {
+                insert2(p->data);
+                start1=p->next;
+                prep=prep->next;
+                p=p->next;
+            }
+            else
+                p=p->next;
+        }
+        else
+        {
+            if(isFibonacci(p->data))
+            {
+                prep->next=p->next;
+                insert2(p->data);
+            }
+            prep=p;
+            p=p->next;
+        }
+    }
+}
